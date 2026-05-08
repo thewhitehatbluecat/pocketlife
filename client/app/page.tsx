@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
+import { EyeIcon, EyeSlashIcon, MoonIcon, SunIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [dark, setDark] = useState(false);
 
   function validateEmail(value: string) {
     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -24,7 +25,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className={`min-h-screen flex items-center justify-center bg-background px-4 relative${dark ? " dark" : ""}`}>
+      <button
+        type="button"
+        onClick={() => setDark((v) => !v)}
+        className="absolute top-4 right-4 p-2 rounded-full border border-border text-foreground hover:bg-accent transition-colors"
+        aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
+      >
+        {dark ? <SunIcon size={16} /> : <MoonIcon size={16} />}
+      </button>
       <div className="w-full max-w-sm space-y-8">
         <div className="space-y-2 text-center">
           <h1 className="font-[family-name:var(--font-display)] text-4xl font-light tracking-wide text-foreground">
