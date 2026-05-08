@@ -1,13 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  function validateEmail(value: string) {
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    setEmailError(
+      valid || value === "" ? "" : "Please enter a valid email address.",
+    );
+  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,16 +37,23 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1.5">
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="username"
-              type="text"
-              autoComplete="username"
-              placeholder="your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                validateEmail(e.target.value);
+              }}
+              aria-invalid={!!emailError}
               required
             />
+            {emailError && (
+              <p className="text-xs text-primary">{emailError}</p>
+            )}
           </div>
 
           <div className="space-y-1.5">
@@ -49,15 +66,30 @@ export default function LoginPage() {
                 Forgot password?
               </a>
             </div>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="••••••••"
+                className="pr-9"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeSlashIcon size={15} />
+                ) : (
+                  <EyeIcon size={15} />
+                )}
+              </button>
+            </div>
           </div>
 
           <Button type="submit" className="w-full">
@@ -67,7 +99,10 @@ export default function LoginPage() {
 
         <p className="text-center text-xs text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <a href="#" className="text-primary hover:text-primary/80 transition-colors">
+          <a
+            href="#"
+            className="text-primary hover:text-primary/80 transition-colors"
+          >
             Create one
           </a>
         </p>
